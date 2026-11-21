@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הכסף שלנו</title>
+<meta name="theme-color" content="#0B1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="הכסף שלנו">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F6; --surface:#FFFFFF; --surface-2:#F5F7FB; --ink:#14213D; --muted:#5B6B82; --line:#DCE2EB;
+  --guy:#2F6BFF; --guy-soft:#E3EBFF; --gaia:#D9437A; --gaia-soft:#FBE3EC; --joint:#0E9F96; --joint-soft:#DDF4F2;
+  --apt:#6D5AE6; --pers:#E89B2A; --var:#2AA7D8; --inv:#0E9F96; --bad:#E5484D; --bad-soft:#FDE7E8; --good:#1E9E62;
+  --shadow:0 1px 2px rgba(20,33,61,.06),0 8px 24px rgba(20,33,61,.06);
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1220; --surface:#121B2B; --surface-2:#18233A; --ink:#E7EDF6; --muted:#93A3BA; --line:#25334C;
+    --guy:#5B8BFF; --guy-soft:#1A2A52; --gaia:#F06C9B; --gaia-soft:#45182B; --joint:#2CC2B7; --joint-soft:#0E3532;
+    --apt:#8C7DFF; --pers:#F2B04F; --var:#4CC1EC; --inv:#2CC2B7; --bad:#FF6B70; --bad-soft:#401A1D; --good:#3CCB86;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1220; --surface:#121B2B; --surface-2:#18233A; --ink:#E7EDF6; --muted:#93A3BA; --line:#25334C;
+  --guy:#5B8BFF; --guy-soft:#1A2A52; --gaia:#F06C9B; --gaia-soft:#45182B; --joint:#2CC2B7; --joint-soft:#0E3532;
+  --apt:#8C7DFF; --pers:#F2B04F; --var:#4CC1EC; --inv:#2CC2B7; --bad:#FF6B70; --bad-soft:#401A1D; --good:#3CCB86;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{max-width:100%;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Rubik","Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;touch-action:pan-y pinch-zoom}
+.grid>*,.card,main{min-width:0}
+@media (max-width:640px){
+  main{padding:14px 12px 96px!important}
+  .card{padding:14px;border-radius:14px}
+  .mname{font-size:19px;min-width:0}
+  .mswitch button{width:32px;height:32px}
+  .monthbar{gap:8px}
+  .salary{font-size:26px}
+  .joint .v{font-size:19px}
+  .top-in{padding:10px 12px;gap:10px}
+  .brand{font-size:17px}
+  .live #liveText{display:none}
+  .rate{font-size:12.5px}
+  .cats{grid-template-columns:1fr}
+  .donut-box{justify-content:center}
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--guy);outline-offset:2px}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:700;font-size:19px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:conic-gradient(from 200deg,var(--guy),var(--joint),var(--gaia),var(--guy));position:relative}
+.brand-mark::after{content:"";position:absolute;inset:7px;border-radius:5px;background:var(--surface)}
+.live{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.live.on .dot{background:var(--good);box-shadow:0 0 0 0 var(--good);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 50%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.live.on .dot{animation:none}}
+.spacer{flex:1}
+.who{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 12px 4px 6px;font-weight:500;font-size:14px}
+.who i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-style:normal;font-size:12px;font-weight:700}
+nav.tabs{display:flex;gap:4px;max-width:1080px;margin:0 auto;padding:0 12px}
+nav.tabs a{padding:10px 14px 12px;color:var(--muted);text-decoration:none;font-weight:500;border-bottom:2.5px solid transparent;font-size:14.5px}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--ink)}
+@media (max-width:640px){
+  nav.tabs{display:none}
+  .bottom-nav{display:flex!important}
+  main{padding-bottom:86px!important}
+}
+.bottom-nav{display:none;position:fixed;bottom:0;inset-inline:0;z-index:9;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.bottom-nav a{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-size:12px;font-weight:500;padding:6px 0;border-radius:10px}
+.bottom-nav a svg{display:block;margin:0 auto 2px;width:22px;height:22px}
+.bottom-nav a[aria-current="page"]{color:var(--ink);background:var(--surface-2)}
+
+main{max-width:1080px;margin:0 auto;padding:20px 18px 48px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+h2{font-size:17px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.row{display:flex;align-items:center;gap:10px}
+.grid{display:grid;gap:16px}
+
+/* month switcher */
+.monthbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.mswitch{display:flex;align-items:center;gap:6px}
+.mswitch button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.mswitch button:disabled{opacity:.35;cursor:default}
+.mname{font-size:24px;font-weight:700;min-width:150px;text-align:center;letter-spacing:-.02em}
+
+.banner{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:var(--guy-soft);margin-bottom:16px;font-size:14px}
+.banner.warn{background:var(--bad-soft)}
+.banner b{font-weight:600}
+.btn{border:0;border-radius:11px;padding:10px 16px;font-weight:600;background:var(--ink);color:var(--surface)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn.sm{padding:6px 12px;font-size:13.5px}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* joint strip */
+.joint{display:grid;grid-template-columns:repeat(5,1fr);gap:0;padding:0;overflow:hidden}
+.joint>div{padding:16px 18px;border-inline-start:1px solid var(--line)}
+.joint>div:first-child{border-inline-start:0}
+.joint .k{font-size:13px;color:var(--muted)}
+.joint .v{font-size:22px;font-weight:700;margin-top:2px;letter-spacing:-.02em}
+@media (max-width:760px){.joint{grid-template-columns:repeat(2,1fr)}.joint>div{border-inline-start:0;border-top:1px solid var(--line)}.joint>div:nth-child(-n+2){border-top:0}.joint>div:last-child{grid-column:span 2}}
+
+/* person flow */
+.people{grid-template-columns:1fr 1fr}
+@media (max-width:860px){.people{grid-template-columns:1fr}}
+.person{position:relative;overflow:hidden}
+.person::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--pc)}
+.phead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.avatar{width:34px;height:34px;border-radius:11px;background:var(--pc);color:#fff;display:grid;place-items:center;font-weight:700}
+.status{margin-inline-start:auto;font-size:12.5px;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.status.ok{background:var(--joint-soft);color:var(--joint)}
+.salary{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.flow{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--surface-2);margin:14px 0 12px}
+.flow span{height:100%;min-width:0;transition:flex-basis .4s}
+.flow .rem{background:repeating-linear-gradient(-45deg,var(--pcs),var(--pcs) 5px,transparent 5px,transparent 9px);background-color:color-mix(in srgb,var(--pc) 22%,transparent)}
+.legend{display:grid;grid-template-columns:1fr auto;row-gap:7px;column-gap:12px;font-size:14px}
+.legend .l{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.legend .l i{width:10px;height:10px;border-radius:3px;flex:none}
+.legend .tot{border-top:1px dashed var(--line);padding-top:8px;font-weight:600;color:var(--ink)}
+.over{color:var(--bad)!important}
+.pos{color:var(--good)}
+.rate{font-size:13px;color:var(--muted);margin-top:10px}
+
+/* charts */
+.charts{grid-template-columns:1.6fr 1fr}
+@media (max-width:860px){.charts{grid-template-columns:1fr}}
+.chart-wrap{overflow-x:auto}
+.donut-box{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dleg{display:grid;gap:6px;font-size:13.5px;flex:1;min-width:170px}
+.dleg div{display:flex;align-items:center;gap:8px}
+.dleg i{width:10px;height:10px;border-radius:3px;flex:none}
+.dleg .amt{margin-inline-start:auto;color:var(--muted)}
+.keys{display:flex;gap:14px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.keys span{display:flex;align-items:center;gap:6px}
+.keys i{width:10px;height:10px;border-radius:3px}
+
+/* forms */
+.field{display:grid;gap:6px}
+.field label{font-size:13px;color:var(--muted);font-weight:500}
+.inp{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:11px;padding:10px 12px;font-size:16px;outline:none}
+.inp:focus{border-color:var(--ink);background:var(--surface)}
+.inp.big{font-size:26px;font-weight:700;padding:12px 14px;letter-spacing:-.02em}
+.money{position:relative}
+.money .inp{padding-inline-end:34px;direction:ltr;text-align:right}
+.money::after{content:"₪";position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.money.big::after{font-size:20px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.cat{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 12px}
+.cat .name{flex:1;font-size:14px;font-weight:500}
+.cat .money{width:118px}
+.cat .inp{padding:8px 10px;background:var(--surface);font-size:15px}
+.cat.has{border-color:color-mix(in srgb,var(--pc) 50%,var(--line))}
+.inv-row{display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+@media (max-width:560px){.inv-row{grid-template-columns:1fr 1fr}.inv-row .money{grid-column:span 2}}
+.x{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.entry-grid{grid-template-columns:1fr 330px;align-items:start}
+@media (max-width:900px){.entry-grid{grid-template-columns:1fr}}
+.sticky{position:sticky;top:120px}
+.sumline{display:flex;justify-content:space-between;padding:7px 0;font-size:14.5px}
+.sumline+.sumline{border-top:1px solid var(--line)}
+.sumline.big{font-size:18px;font-weight:700;padding-top:12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:2px;background:var(--surface-2)}
+.seg button{border:0;background:transparent;padding:6px 10px;border-radius:8px;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+
+/* fixed */
+.ftable{width:100%;border-collapse:collapse}
+.ftable th{font-size:12.5px;color:var(--muted);font-weight:500;text-align:right;padding:6px 6px;border-bottom:1px solid var(--line)}
+.ftable td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ftable .inp{padding:8px 10px;font-size:15px}
+.ftable .money{min-width:110px}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:600}
+.split{display:flex;gap:10px;flex-wrap:wrap}
+.split .card{flex:1;min-width:180px;padding:14px 16px}
+
+/* history */
+.htable{width:100%;border-collapse:collapse;font-size:14px;min-width:820px}
+.htable th{font-weight:500;color:var(--muted);font-size:12.5px;padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.htable th.g{color:var(--guy)} .htable th.a{color:var(--gaia)} .htable th.j{color:var(--joint)}
+.htable td{padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.htable tbody tr{cursor:pointer}
+.htable tbody tr:hover{background:var(--surface-2)}
+.htable .sep{border-inline-start:1px solid var(--line)}
+.htable tfoot td{font-weight:700;background:var(--surface-2)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(10,16,30,.55);display:grid;place-items:center;z-index:20;padding:20px}
+.modal .card{max-width:420px;width:100%;text-align:center;padding:28px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.pick button{border:2px solid var(--line);background:var(--surface-2);border-radius:16px;padding:20px 10px;font-size:18px;font-weight:700;display:grid;gap:10px;justify-items:center}
+.pick button:hover{border-color:var(--pc)}
+.pick .avatar{width:48px;height:48px;font-size:20px;border-radius:15px}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;max-width:90vw;background:var(--ink);color:var(--surface);padding:11px 18px;border-radius:12px;font-weight:500;z-index:30;transform:translateY(20px);opacity:0;visibility:hidden;transition:transform .25s,opacity .25s,visibility .25s}
+.toast.show{transform:none;opacity:1;visibility:visible}
+@media (max-width:640px){.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+.ro{background:var(--surface-2);border:1px dashed var(--line);padding:10px 14px;border-radius:12px;font-size:13.5px;margin-bottom:14px}
+
+/* auth */
+body.out nav.tabs, body.out .bottom-nav, body.out #whoBtn, body.out #live{display:none!important}
+.auth{max-width:400px;margin:6vh auto 0}
+.auth h1{font-size:26px;margin-bottom:6px}
+.auth .field{margin-top:14px}
+.auth .err{color:var(--bad);font-size:14px;min-height:20px;margin-top:10px}
+.linkbtn{background:none;border:0;color:var(--guy);font-weight:500;padding:6px 0}
+.auth .inp{direction:ltr;text-align:left}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>הכסף שלנו</div>
+    <div class="live" id="live"><span class="dot"></span><span id="liveText">מתחבר…</span></div>
+    <div class="spacer"></div>
+    <button class="who" id="whoBtn" hidden></button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <a href="#overview">סקירה חודשית</a>
+    <a href="#entry">הזנת נתונים</a>
+    <a href="#fixed">הוצאות קבועות</a>
+    <a href="#history">היסטוריה</a>
+  </nav>
+</header>
+<main id="app"></main>
+<nav class="bottom-nav" id="bnav">
+  <a href="#overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>סקירה</a>
+  <a href="#entry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>הזנה</a>
+  <a href="#fixed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>קבועות</a>
+  <a href="#history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>היסטוריה</a>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, onSnapshot, setDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const PEOPLE = { guy:{name:"גיא", letter:"ג", color:"var(--guy)", soft:"var(--guy-soft)"}, gaia:{name:"גאיה", letter:"ג", color:"var(--gaia)", soft:"var(--gaia-soft)"} };
+const DEFAULT_CATS = ["סופר ומכולת","דלק ותחבורה","מסעדות ובילויים","קניות וביגוד","בריאות וטיפוח","מתנות ואירועים","לבית","חופשות","מנויים","אחר"];
+const PAYERS = {guy:"גיא", gaia:"גאיה", both:"חצי-חצי"};
+const START_YM = "2026-07";
+const VIEWS = ["overview","entry","fixed","history"];
+
+const S = {
+  db:null, user:null, myId:null, me:null, map:{}, months:{}, fixed:{apartment:[],personal:[]},
+  fixedLoaded:false, monthsLoaded:false, mapLoaded:false, live:false, canWrite:true,
+  viewYm:prevYm(curYm()), entryYm:prevYm(curYm()), draft:null, draftKey:null, dirty:false,
+  fixedDraft:null, fixedDirty:false, saving:false, timedOut:false
+};
+
+/* ---------- utils ---------- */
+function curYm(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+function addYm(ym,n){ let [y,m]=ym.split("-").map(Number); m+=n; while(m>12){m-=12;y++} while(m<1){m+=12;y--} return y+"-"+String(m).padStart(2,"0"); }
+function prevYm(ym){ return addYm(ym,-1); }
+function ymLabel(ym,short){ const [y,m]=ym.split("-").map(Number); return new Intl.DateTimeFormat("he-IL",short?{month:"short",year:"2-digit"}:{month:"long",year:"numeric"}).format(new Date(y,m-1,1)); }
+function ymShort(ym){ const [y,m]=ym.split("-"); return m+"/"+y.slice(2); }
+const nf = new Intl.NumberFormat("he-IL",{maximumFractionDigits:0});
+function money(v){ if(v==null||isNaN(v)) return "–"; return `<span class="num">${v<0?"−":""}${nf.format(Math.abs(Math.round(v)))} ₪</span>`; }
+function pct(v){ if(v==null||!isFinite(v)) return "–"; return `<span class="num">${Math.round(v*100)}%</span>`; }
+function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function num(v){ const n=parseFloat(String(v).replace(/[^\d.\-]/g,"")); return isFinite(n)?n:0; }
+function sum(a){ return a.reduce((s,x)=>s+(+x||0),0); }
+function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2600); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+/* ---------- calculations ---------- */
+function aptMonthly(it){ return num(it.amount)/(it.freq==="bi"?2:1); }
+function aptShare(p, items=S.fixed.apartment){ return sum(items.map(it=> it.payer===p?aptMonthly(it): it.payer==="both"?aptMonthly(it)/2:0)); }
+function persFixed(p, items=S.fixed.personal){ return sum(items.filter(it=>it.owner===p).map(it=>num(it.amount))); }
+function calc(p, ym){
+  const d = S.months[ym+"-"+p];
+  const salary = d && d.salary!=null && d.salary!=="" ? num(d.salary) : null;
+  const apt = d && d.fixedApt!=null ? d.fixedApt : aptShare(p);
+  const pers = d && d.fixedPersonal!=null ? d.fixedPersonal : persFixed(p);
+  const varExp = d ? sum(Object.values(d.expenses||{})) : 0;
+  const inv = d ? sum((d.investments||[]).map(x=>num(x.amount))) : 0;
+  const spend = apt+pers+varExp;
+  const remaining = salary==null?null:salary-spend-inv;
+  const rate = salary? (inv+remaining)/salary : null;
+  return {d, salary, apt, pers, varExp, inv, spend, remaining, rate, filled: salary!=null};
+}
+function joint(ym){
+  const g=calc("guy",ym), a=calc("gaia",ym);
+  const anySal = g.salary!=null || a.salary!=null;
+  const income = anySal ? (g.salary||0)+(a.salary||0) : null;
+  const spend = g.spend+a.spend, inv=g.inv+a.inv;
+  const remaining = income==null?null:income-spend-inv;
+  return {g,a,income,spend,inv,remaining,rate: income? (inv+remaining)/income : null};
+}
+function monthRange(){
+  let min=START_YM; Object.values(S.months).forEach(d=>{ if(d.ym && d.ym<min) min=d.ym; });
+  let max=curYm(); Object.values(S.months).forEach(d=>{ if(d.ym && d.ym>max) max=d.ym; });
+  const out=[]; for(let y=min; y<=max; y=addYm(y,1)) out.push(y); return out;
+}
+
+/* ---------- routing ---------- */
+function view(){ const h=location.hash.slice(1); return VIEWS.includes(h)?h:"overview"; }
+window.addEventListener("hashchange", ()=>{ render(); window.scrollTo(0,0); });
+
+/* ---------- rendering ---------- */
+function render(){
+  const v=view();
+  document.querySelectorAll("#tabs a,#bnav a").forEach(a=>a.setAttribute("aria-current", a.getAttribute("href")==="#"+v?"page":"false"));
+  const live=document.getElementById("live"); live.classList.toggle("on", S.live);
+  document.getElementById("liveText").textContent = S.live ? "מסונכרן בלייב" : (S.timedOut ? "אין חיבור כרגע – הנתונים עלולים להיות לא מעודכנים" : ("מתחבר…"));
+  const who=document.getElementById("whoBtn");
+  if(S.me){ const P=PEOPLE[S.me]; who.hidden=false; who.innerHTML=`<i style="background:${P.color}">${P.letter}</i>${P.name}`; } else who.hidden=true;
+  const app=document.getElementById("app");
+  document.body.classList.toggle("out", S.authState!=="in");
+  if(S.authState!=="in"){ app.innerHTML=renderAuth(); return; }
+  if(v==="overview") app.innerHTML=renderOverview();
+  else if(v==="entry") app.innerHTML=renderEntry();
+  else if(v==="fixed") app.innerHTML=renderFixed();
+  else app.innerHTML=renderHistory();
+  if(v==="entry") updateEntrySummary();
+}
+
+function monthSwitcher(ym, kind){
+  const range=monthRange();
+  return `<div class="mswitch">
+    <button data-act="mnav" data-kind="${kind}" data-d="-1" aria-label="חודש קודם" ${ym<=range[0]?"disabled":""}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="mname">${ymLabel(ym)}</div>
+    <button data-act="mnav" data-kind="${kind}" data-d="1" aria-label="חודש הבא" ${ym>=range[range.length-1]?"disabled":""}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+  </div>`;
+}
+
+function reminder(){
+  if(!S.me) return "";
+  const today=new Date(), target=prevYm(curYm());
+  const c=calc(S.me,target);
+  if(today.getDate()>=10 && !c.filled){
+    return `<div class="banner"><span style="font-size:20px">🗓️</span><div style="flex:1"><b>הגיע הזמן לעדכן את ${ymLabel(target)}</b><div class="small muted">משכורת, הוצאות לפי קטגוריות והשקעות – לוקח דקה.</div></div><a class="btn sm" href="#entry" data-act="goEntry" data-ym="${target}">למילוי</a></div>`;
+  }
+  return "";
+}
+
+function personCard(p, c){
+  const P=PEOPLE[p]; const sal=c.salary||0;
+  const parts=[["apt","var(--apt)","חלק בהוצאות הדירה",c.apt],["pers","var(--pers)","הוצאות קבועות אישיות",c.pers],["var","var(--var)","הוצאות משתנות",c.varExp],["inv","var(--inv)","השקעות",c.inv]];
+  const base=Math.max(sal, c.spend+c.inv, 1);
+  const segs=parts.map(([k,col,,v])=>v>0?`<span style="flex-basis:${v/base*100}%;background:${col}" title="${esc(k)}"></span>`:"").join("")+
+    (c.remaining>0?`<span class="rem" style="flex-basis:${c.remaining/base*100}%"></span>`:"");
+  return `<section class="card person" style="--pc:${P.color};--pcs:${P.color}">
+    <div class="phead"><div class="avatar">${P.letter}</div><div><h2>${P.name}</h2><div class="small muted">משכורת נטו</div></div>
+      <span class="status ${c.filled?"ok":""}">${c.filled?"✓ מולא":"טרם מולא"}</span></div>
+    <div class="salary">${c.filled?money(c.salary):'<span class="muted" style="font-size:20px;font-weight:500">עוד לא הוזנה משכורת</span>'}</div>
+    <div class="flow" aria-hidden="true">${segs}</div>
+    <div class="legend">
+      ${parts.map(([k,col,label,v])=>`<div class="l"><i style="background:${col}"></i>${label}</div><div>${money(v)}</div>`).join("")}
+      <div class="l tot">נשאר בסוף החודש</div><div class="tot ${c.remaining<0?"over":""}">${c.filled?money(c.remaining):"–"}</div>
+    </div>
+    ${c.filled?`<div class="rate">חיסכון + השקעה: <b class="${c.rate<0?"over":"pos"}">${pct(c.rate)}</b> מהמשכורת${c.remaining<0?" · ההוצאות וההשקעות גבוהות מהמשכורת החודש":""}</div>`:""}
+  </section>`;
+}
+
+function trendChart(endYm){
+  const range=monthRange().filter(y=>y<=endYm).slice(-12);
+  const data=range.map(y=>({ym:y,...joint(y)}));
+  const maxV=Math.max(1,...data.map(d=>Math.max(d.income||0,d.spend+d.inv)));
+  const W=Math.max(560,range.length*58), H=230, pb=28, pt=12, ch=H-pb-pt, bw=16, gap=4, slot=W/range.length;
+  const y=v=>pt+ch-(v/maxV)*ch;
+  const ticks=[0,.25,.5,.75,1].map(t=>t*maxV);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="הכנסות מול הוצאות והשקעות לפי חודש" style="direction:ltr;display:block;width:100%;min-width:${range.length*34}px;height:auto">`;
+  ticks.forEach(t=>{ svg+=`<line x1="0" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-dasharray="${t?3:0} 4"/>`; });
+  // RTL: newest month on the left
+  data.slice().reverse().forEach((d,i)=>{
+    const cx=i*slot+slot/2, x1=cx-bw-gap/2, x2=cx+gap/2;
+    if(d.income) svg+=`<rect x="${x1}" y="${y(d.income)}" width="${bw}" height="${ch-(y(d.income)-pt)}" rx="4" fill="var(--joint)" opacity=".35"><title>הכנסות ${nf.format(d.income)} ₪</title></rect>`;
+    const sp=d.spend, iv=d.inv;
+    if(d.income!=null||iv){ svg+=`<rect x="${x2}" y="${y(sp)}" width="${bw}" height="${ch-(y(sp)-pt)}" rx="4" fill="var(--apt)"><title>הוצאות ${nf.format(sp)} ₪</title></rect>`; }
+    if(iv) svg+=`<rect x="${x2}" y="${y(sp+iv)}" width="${bw}" height="${y(sp)-y(sp+iv)}" rx="4" fill="var(--inv)"><title>השקעות ${nf.format(iv)} ₪</title></rect>`;
+    svg+=`<text x="${cx}" y="${H-8}" text-anchor="middle" font-size="11.5" fill="${d.ym===endYm?"var(--ink)":"var(--muted)"}" font-weight="${d.ym===endYm?600:400}">${ymShort(d.ym)}</text>`;
+  });
+  return svg+"</svg>";
+}
+
+function donut(ym){
+  const j=joint(ym);
+  const parts=[["דירה (שניכם)",j.g.apt+j.a.apt,"var(--apt)"],["קבועות אישיות",j.g.pers+j.a.pers,"var(--pers)"]];
+  const cats={};
+  ["guy","gaia"].forEach(p=>{ const d=S.months[ym+"-"+p]; Object.entries(d?.expenses||{}).forEach(([k,v])=>{ if(num(v)) cats[k]=(cats[k]||0)+num(v); }); });
+  const palette=["#2AA7D8","#F26D5B","#8BC34A","#FFB547","#B565D8","#4DB6AC","#E57399","#7986CB","#A1887F","#90A4AE"];
+  Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([k,v],i)=>parts.push([k,v,palette[i%palette.length]]));
+  const total=sum(parts.map(p=>p[1]));
+  if(!total) return `<div class="empty small">אין הוצאות לחודש הזה עדיין</div>`;
+  const R=62, C=2*Math.PI*R; let off=0;
+  let svg=`<svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="התפלגות הוצאות"><g transform="rotate(-90 80 80)">`;
+  parts.filter(p=>p[1]>0).forEach(([k,v,col])=>{ const len=v/total*C; svg+=`<circle cx="80" cy="80" r="${R}" fill="none" stroke="${col}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}"><title>${esc(k)}</title></circle>`; off+=len; });
+  svg+=`</g><text x="80" y="76" text-anchor="middle" font-size="11" fill="var(--muted)">סה״כ הוצאות</text><text x="80" y="96" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">${nf.format(Math.round(total))} ₪</text></svg>`;
+  return `<div class="donut-box">${svg}<div class="dleg">${parts.filter(p=>p[1]>0).map(([k,v,col])=>`<div><i style="background:${col}"></i>${esc(k)}<span class="amt">${money(v)}</span></div>`).join("")}</div></div>`;
+}
+
+function renderOverview(){
+  const ym=S.viewYm, j=joint(ym);
+  return `${reminder()}
+  <div class="monthbar">${monthSwitcher(ym,"view")}<a class="btn ghost sm" href="#entry" data-act="goEntry" data-ym="${ym}">עדכון החודש</a></div>
+  <div class="grid">
+    <section class="card joint" aria-label="ביחד">
+      <div><div class="k">הכנסות ביחד</div><div class="v">${money(j.income)}</div></div>
+      <div><div class="k">הוצאות ביחד</div><div class="v">${money(j.spend)}</div></div>
+      <div><div class="k">השקעות</div><div class="v" style="color:var(--inv)">${money(j.inv)}</div></div>
+      <div><div class="k">נשאר ביחד</div><div class="v ${j.remaining<0?"over":""}">${money(j.remaining)}</div></div>
+      <div><div class="k">חיסכון + השקעה</div><div class="v">${pct(j.rate)}</div></div>
+    </section>
+    <div class="grid people">${personCard("guy",j.g)}${personCard("gaia",j.a)}</div>
+    <div class="grid charts">
+      <section class="card"><div class="row" style="justify-content:space-between;margin-bottom:12px;flex-wrap:wrap"><h2>12 החודשים האחרונים</h2>
+        <div class="keys"><span><i style="background:var(--joint);opacity:.35"></i>הכנסות</span><span><i style="background:var(--apt)"></i>הוצאות</span><span><i style="background:var(--inv)"></i>השקעות</span></div></div>
+        <div class="chart-wrap">${trendChart(ym)}</div></section>
+      <section class="card"><h2 style="margin-bottom:12px">לאן הלך הכסף החודש</h2>${donut(ym)}</section>
+    </div>
+  </div>`;
+}
+
+/* ---------- entry ---------- */
+function ensureDraft(){
+  const key=S.entryYm+"-"+S.me;
+  if(S.draftKey!==key || (!S.dirty)){
+    const d=S.months[key];
+    S.draft = d ? {salary:d.salary??"", expenses:clone(d.expenses||{}), investments:clone(d.investments||[]), note:d.note||""} : {salary:"", expenses:{}, investments:[], note:""};
+    S.draftKey=key; S.dirty=false;
+  }
+}
+function renderEntry(){
+  if(!S.me) return `<div class="card empty">בחרו קודם מי אתם 👆</div>`;
+  ensureDraft();
+  const P=PEOPLE[S.me], D=S.draft;
+  const prevCats=new Set(); Object.values(S.months).filter(m=>m.person===S.me).forEach(m=>Object.keys(m.expenses||{}).forEach(k=>prevCats.add(k)));
+  const cats=[...DEFAULT_CATS, ...[...prevCats].filter(k=>!DEFAULT_CATS.includes(k)), ...Object.keys(D.expenses).filter(k=>!DEFAULT_CATS.includes(k)&&!prevCats.has(k))];
+  const ro=!S.canWrite;
+  const exists=!!S.months[S.draftKey];
+  return `<div class="monthbar">${monthSwitcher(S.entryYm,"entry")}<span class="pill" style="background:${P.soft};color:${P.color}">${P.name} ממלא${S.me==="gaia"?"ת":""}</span></div>
+  ${ro?`<div class="ro">יש לך הרשאת צפייה בלבד. כדי לעדכן נתונים צריך הרשאת עריכה – בקשו מבעל האפליקציה לשתף איתכם בהרשאת עריכה.</div>`:""}
+  <div class="grid entry-grid" style="--pc:${P.color}">
+    <div class="grid">
+      <section class="card"><div class="field"><label for="sal">משכורת נטו שנכנסה לחשבון</label>
+        <div class="money big"><input id="sal" class="inp big" inputmode="decimal" data-f="salary" value="${esc(D.salary)}" placeholder="0" ${ro?"disabled":""}></div></div></section>
+      <section class="card"><div class="row" style="justify-content:space-between;margin-bottom:4px"><h2>הוצאות משתנות לפי קטגוריה</h2></div>
+        <p class="small muted" style="margin:0 0 14px">מה שהוצאת החודש מעבר להוצאות הקבועות (הן כבר נספרות אוטומטית).</p>
+        <div class="cats">${cats.map(k=>`<div class="cat ${num(D.expenses[k])?"has":""}"><span class="name">${esc(k)}</span><div class="money"><input class="inp" inputmode="decimal" data-cat="${esc(k)}" value="${esc(D.expenses[k]??"")}" placeholder="0" aria-label="${esc(k)}" ${ro?"disabled":""}></div></div>`).join("")}</div>
+        ${ro?"":`<div class="row" style="margin-top:12px"><input class="inp" id="newCat" placeholder="קטגוריה חדשה, למשל: ספורט" style="max-width:260px"><button class="btn ghost sm" data-act="addCat">הוספה</button></div>`}
+      </section>
+      <section class="card"><h2 style="margin-bottom:12px">השקעות החודש</h2>
+        <div id="invs">${D.investments.map((x,i)=>`<div class="inv-row"><div class="money"><input class="inp" inputmode="decimal" data-inv="${i}" data-k="amount" value="${esc(x.amount)}" placeholder="סכום" ${ro?"disabled":""}></div>
+          <input class="inp" data-inv="${i}" data-k="where" value="${esc(x.where)}" placeholder="לאן (אקסלנס…)" ${ro?"disabled":""}>
+          <input class="inp" data-inv="${i}" data-k="how" value="${esc(x.how)}" placeholder="איך (הוראת קבע…)" ${ro?"disabled":""}>
+          ${ro?"":`<button class="x" data-act="delInv" data-i="${i}" aria-label="מחיקה">✕</button>`}</div>`).join("") || `<p class="small muted" style="margin:0 0 8px">לא נרשמו השקעות החודש.</p>`}</div>
+        ${ro?"":`<button class="btn ghost sm" data-act="addInv">+ הוספת השקעה</button>`}
+      </section>
+      <section class="card"><div class="field"><label for="note">הערה לחודש (לא חובה)</label><input id="note" class="inp" data-f="note" value="${esc(D.note)}" placeholder="למשל: בונוס, חתונה של חברים…" ${ro?"disabled":""}></div></section>
+    </div>
+    <aside class="card sticky" id="esum"></aside>
+  </div>`;
+}
+function updateEntrySummary(){
+  const el=document.getElementById("esum"); if(!el||!S.draft) return;
+  const D=S.draft, p=S.me;
+  const sal=D.salary===""?null:num(D.salary);
+  const apt=aptShare(p), pers=persFixed(p), v=sum(Object.values(D.expenses).map(num)), inv=sum(D.investments.map(x=>num(x.amount)));
+  const rem=sal==null?null:sal-apt-pers-v-inv;
+  const exists=!!S.months[S.draftKey];
+  el.innerHTML=`<h2 style="margin-bottom:10px">סיכום ${ymLabel(S.entryYm)}</h2>
+    <div class="sumline"><span>משכורת</span><b>${money(sal)}</b></div>
+    <div class="sumline"><span class="muted">חלק בהוצאות הדירה</span><span>${money(apt)}</span></div>
+    <div class="sumline"><span class="muted">קבועות אישיות</span><span>${money(pers)}</span></div>
+    <div class="sumline"><span class="muted">הוצאות משתנות</span><span>${money(v)}</span></div>
+    <div class="sumline"><span class="muted">השקעות</span><span>${money(inv)}</span></div>
+    <div class="sumline big"><span>נשאר</span><span class="${rem<0?"over":""}">${money(rem)}</span></div>
+    ${S.canWrite?`<button class="btn" style="width:100%;margin-top:14px" data-act="save" ${S.saving||(!S.dirty&&exists)?"disabled":""}>${S.saving?"שומר…":exists?(S.dirty?"שמירת שינויים":"נשמר ✓"):"שמירה"}</button>`:""}
+    <p class="small muted" style="margin:10px 0 0">אחרי השמירה ${S.me==="guy"?"גאיה תראה":"גיא יראה"} את זה מיד.</p>`;
+}
+
+/* ---------- fixed ---------- */
+function ensureFixedDraft(){ if(!S.fixedDirty || !S.fixedDraft) { S.fixedDraft=clone(S.fixed); S.fixedDirty=false; } }
+function renderFixed(){
+  ensureFixedDraft(); const F=S.fixedDraft, ro=!S.canWrite;
+  const g=aptShare("guy",F.apartment), a=aptShare("gaia",F.apartment);
+  const sel=(i,k,val,opts,list)=>`<select class="inp" data-fx="${list}" data-i="${i}" data-k="${k}" ${ro?"disabled":""}>${Object.entries(opts).map(([v,l])=>`<option value="${v}" ${val===v?"selected":""}>${l}</option>`).join("")}</select>`;
+  return `${ro?`<div class="ro">צפייה בלבד – אין לך הרשאה לערוך.</div>`:""}
+  <div class="split" style="margin-bottom:16px">
+    <div class="card"><div class="small muted">גיא משלם על הדירה בחודש</div><div style="font-size:24px;font-weight:700;color:var(--guy)">${money(g)}</div></div>
+    <div class="card"><div class="small muted">גאיה משלמת על הדירה בחודש</div><div style="font-size:24px;font-weight:700;color:var(--gaia)">${money(a)}</div></div>
+    <div class="card"><div class="small muted">סה״כ דירה בחודש</div><div style="font-size:24px;font-weight:700">${money(g+a)}</div></div>
+  </div>
+  <section class="card" style="margin-bottom:16px"><h2>🏠 הוצאות הדירה</h2>
+    <p class="small muted" style="margin:4px 0 12px">חשבון דו־חודשי (ארנונה, גז, חשמל, מים) נספר אוטומטית כחצי בכל חודש.</p>
+    <div class="chart-wrap"><table class="ftable"><thead><tr><th>הוצאה</th><th>סכום החשבון</th><th>תדירות</th><th>מי משלם</th><th>לחודש</th><th></th></tr></thead><tbody>
+    ${F.apartment.map((it,i)=>`<tr><td><input class="inp" data-fx="apartment" data-i="${i}" data-k="name" value="${esc(it.name)}" ${ro?"disabled":""}></td>
+      <td><div class="money"><input class="inp" inputmode="decimal" data-fx="apartment" data-i="${i}" data-k="amount" value="${esc(it.amount)}" ${ro?"disabled":""}></div></td>
+      <td>${sel(i,"freq",it.freq,{monthly:"חודשי",bi:"דו־חודשי"},"apartment")}</td>
+      <td>${sel(i,"payer",it.payer,PAYERS,"apartment")}</td>
+      <td><b>${money(aptMonthly(it))}</b></td>
+      <td>${ro?"":`<button class="x" data-act="delFx" data-list="apartment" data-i="${i}" aria-label="מחיקה">✕</button>`}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${ro?"":`<button class="btn ghost sm" style="margin-top:10px" data-act="addFx" data-list="apartment">+ הוצאה לדירה</button>`}
+  </section>
+  <section class="card" style="margin-bottom:16px"><h2>👤 הוצאות קבועות אישיות</h2>
+    <p class="small muted" style="margin:4px 0 12px">מנויים, ביטוחים וכו׳ – כל אחד והקבועות שלו.</p>
+    <div class="chart-wrap"><table class="ftable"><thead><tr><th>הוצאה</th><th>סכום חודשי</th><th>של מי</th><th></th></tr></thead><tbody>
+    ${F.personal.map((it,i)=>`<tr><td><input class="inp" data-fx="personal" data-i="${i}" data-k="name" value="${esc(it.name)}" ${ro?"disabled":""}></td>
+      <td><div class="money"><input class="inp" inputmode="decimal" data-fx="personal" data-i="${i}" data-k="amount" value="${esc(it.amount)}" ${ro?"disabled":""}></div></td>
+      <td>${sel(i,"owner",it.owner,{guy:"גיא",gaia:"גאיה"},"personal")}</td>
+      <td>${ro?"":`<button class="x" data-act="delFx" data-list="personal" data-i="${i}" aria-label="מחיקה">✕</button>`}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${ro?"":`<button class="btn ghost sm" style="margin-top:10px" data-act="addFx" data-list="personal">+ הוצאה אישית</button>`}
+  </section>
+  ${ro?"":`<div class="row"><button class="btn" data-act="saveFx" ${!S.fixedDirty||S.saving?"disabled":""}>${S.saving?"שומר…":S.fixedDirty?"שמירת שינויים":"הכל שמור ✓"}</button>
+    ${S.fixedDirty?`<button class="btn ghost" data-act="resetFx">ביטול</button>`:""}
+    <span class="small muted">שינוי כאן משפיע מהחודש הבא שתמלאו; חודשים שכבר נשמרו נשארים כמו שהיו.</span></div>`}`;
+}
+
+/* ---------- history ---------- */
+function renderHistory(){
+  const range=monthRange().slice().reverse();
+  const rows=range.map(ym=>({ym,...joint(ym)})).filter(r=>r.income!=null||r.inv);
+  if(!rows.length) return `<div class="card empty">עוד אין חודשים עם נתונים.<br><a href="#entry">למילוי החודש הראשון</a></div>`;
+  const T={gs:0,gsp:0,gi:0,gr:0,as:0,asp:0,ai:0,ar:0,inc:0,jr:0,ji:0};
+  rows.forEach(r=>{ T.gs+=r.g.salary||0; T.gsp+=r.g.filled?r.g.spend:0; T.gi+=r.g.inv; T.gr+=r.g.remaining||0; T.as+=r.a.salary||0; T.asp+=r.a.filled?r.a.spend:0; T.ai+=r.a.inv; T.ar+=r.a.remaining||0; T.inc+=r.income||0; T.jr+=r.remaining||0; T.ji+=r.inv; });
+  const c=(v,neg)=>`<td class="${neg&&v<0?"over":""}">${money(v)}</td>`;
+  return `<div class="split" style="margin-bottom:16px">
+    <div class="card"><div class="small muted">סה״כ הכנסות</div><div style="font-size:22px;font-weight:700">${money(T.inc)}</div></div>
+    <div class="card"><div class="small muted">סה״כ הושקע</div><div style="font-size:22px;font-weight:700;color:var(--inv)">${money(T.ji)}</div></div>
+    <div class="card"><div class="small muted">ממוצע חיסכון + השקעה</div><div style="font-size:22px;font-weight:700">${pct(T.inc?(T.ji+T.jr)/T.inc:null)}</div></div>
+  </div>
+  <section class="card" style="padding:0"><div class="chart-wrap"><table class="htable">
+    <thead><tr><th>חודש</th><th class="g sep">גיא · משכורת</th><th class="g">הוצאות</th><th class="g">השקעות</th><th class="g">נשאר</th>
+      <th class="a sep">גאיה · משכורת</th><th class="a">הוצאות</th><th class="a">השקעות</th><th class="a">נשאר</th><th class="j sep">נשאר ביחד</th><th class="j">חיסכון</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr data-act="openMonth" data-ym="${r.ym}"><td><b>${ymLabel(r.ym)}</b></td>
+      <td class="sep">${money(r.g.salary)}</td><td>${r.g.filled?money(r.g.spend):"–"}</td><td>${money(r.g.inv)}</td>${c(r.g.remaining,1)}
+      <td class="sep">${money(r.a.salary)}</td><td>${r.a.filled?money(r.a.spend):"–"}</td><td>${money(r.a.inv)}</td>${c(r.a.remaining,1)}
+      <td class="sep ${r.remaining<0?"over":""}"><b>${money(r.remaining)}</b></td><td>${pct(r.rate)}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>סה״כ</td><td class="sep">${money(T.gs)}</td><td>${money(T.gsp)}</td><td>${money(T.gi)}</td>${c(T.gr,1)}<td class="sep">${money(T.as)}</td><td>${money(T.asp)}</td><td>${money(T.ai)}</td>${c(T.ar,1)}<td class="sep">${money(T.jr)}</td><td>${pct(T.inc?(T.ji+T.jr)/T.inc:null)}</td></tr></tfoot>
+  </table></div></section>
+  <p class="small muted">לחיצה על חודש פותחת את הסקירה שלו.</p>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", async e=>{
+  const t=e.target.closest("[data-act]"); if(!t) return;
+  const a=t.dataset.act;
+  if(a==="mnav"){ const d=+t.dataset.d; if(t.dataset.kind==="view") S.viewYm=addYm(S.viewYm,d); else { if(S.dirty && !confirm("יש שינויים שלא נשמרו. לעבור חודש בלי לשמור?")) return; S.entryYm=addYm(S.entryYm,d); S.dirty=false; } render(); }
+  else if(a==="goEntry"){ S.entryYm=t.dataset.ym; S.dirty=false; }
+  else if(a==="openMonth"){ S.viewYm=t.dataset.ym; location.hash="overview"; }
+  
+  else if(a==="addCat"){ const inp=document.getElementById("newCat"); const k=inp.value.trim(); if(!k) return; if(!(k in S.draft.expenses)) S.draft.expenses[k]=""; S.dirty=true; render(); setTimeout(()=>document.querySelector(`[data-cat="${CSS.escape(k)}"]`)?.focus(),0); }
+  else if(a==="addInv"){ S.draft.investments.push({amount:"",where:"",how:""}); S.dirty=true; render(); }
+  else if(a==="delInv"){ S.draft.investments.splice(+t.dataset.i,1); S.dirty=true; render(); }
+  else if(a==="save"){ saveMonth(); }
+  else if(a==="addFx"){ const l=t.dataset.list; S.fixedDraft[l].push(l==="apartment"?{name:"",amount:"",freq:"monthly",payer:"both"}:{name:"",amount:"",owner:S.me||"guy"}); S.fixedDirty=true; render(); }
+  else if(a==="delFx"){ S.fixedDraft[t.dataset.list].splice(+t.dataset.i,1); S.fixedDirty=true; render(); }
+  else if(a==="resetFx"){ S.fixedDirty=false; S.fixedDraft=null; render(); }
+  else if(a==="saveFx"){ saveFixed(); }
+});
+document.getElementById("whoBtn").addEventListener("click", async ()=>{ if(confirm("להתנתק מהאפליקציה?")) await signOut(auth); });
+document.addEventListener("input", e=>{
+  const t=e.target;
+  if(t.dataset.f){ S.draft[t.dataset.f]=t.value; S.dirty=true; updateEntrySummary(); }
+  else if(t.dataset.cat!=null){ S.draft.expenses[t.dataset.cat]=t.value; S.dirty=true; t.closest(".cat")?.classList.toggle("has", !!num(t.value)); updateEntrySummary(); }
+  else if(t.dataset.inv!=null){ S.draft.investments[+t.dataset.inv][t.dataset.k]=t.value; S.dirty=true; updateEntrySummary(); }
+  else if(t.dataset.fx){ const it=S.fixedDraft[t.dataset.fx][+t.dataset.i]; it[t.dataset.k]=t.dataset.k==="amount"?t.value:t.value; S.fixedDirty=true;
+    if(t.tagName==="SELECT"){ render(); } else { const btn=document.querySelector('[data-act="saveFx"]'); if(btn){ btn.disabled=false; btn.textContent="שמירת שינויים"; } } }
+});
+document.addEventListener("change", e=>{ const t=e.target; if(t.dataset.fx && t.dataset.k==="amount") render(); });
+window.addEventListener("beforeunload", e=>{ if(S.dirty||S.fixedDirty){ e.preventDefault(); e.returnValue=""; } });
+
+/* ---------- auth screens ---------- */
+const EMAILS = {"guyberg132@gmail.com":"guy","gayah410@gmail.com":"gaia"};
+S.authState = "loading"; S.authMode = "login"; S.authErr = ""; S.email = "";
+function renderAuth(){
+  if(S.authState==="loading") return `<div class="empty">טוען…</div>`;
+  if(S.authState==="noconfig") return `<div class="card auth"><h1>כמעט מוכן</h1><p class="muted">חסר קובץ ההגדרות config.js עם פרטי Firebase. אחרי שיתווסף, רעננו את הדף.</p></div>`;
+  if(S.authState==="denied") return `<div class="card auth"><h1>אין גישה</h1><p class="muted">החשבון ${esc(S.email)} לא מורשה להיכנס לאפליקציה הזו.</p><button class="btn" data-act="logout">התנתקות</button></div>`;
+  if(S.authState==="verify") return `<div class="card auth"><h1>אימות מייל</h1>
+    <p class="muted">שלחנו מייל אימות ל־<b dir="ltr">${esc(S.email)}</b>. פתחו אותו ולחצו על הקישור (אם לא הגיע – בדקו בספאם), ואז חזרו לכאן.</p>
+    <button class="btn" style="width:100%;margin-top:8px" data-act="verified">אימתתי, להמשיך</button>
+    <div class="row" style="justify-content:space-between;margin-top:8px"><button class="linkbtn" data-act="resend">שליחה מחדש</button><button class="linkbtn" data-act="logout">התנתקות</button></div>
+    <div class="err">${esc(S.authErr)}</div></div>`;
+  const signup=S.authMode==="signup";
+  return `<div class="card auth">
+    <div class="brand" style="margin-bottom:18px"><span class="brand-mark"></span>הכסף שלנו</div>
+    <h1>${signup?"יצירת סיסמה":"כניסה"}</h1>
+    <p class="muted small" style="margin:0">${signup?"פעם ראשונה כאן? בחרו סיסמה. נשלח לכם מייל אימות קצר.":"גיא וגאיה בלבד."}</p>
+    <div class="field"><label for="em">מייל</label><input id="em" class="inp" type="email" autocomplete="email" inputmode="email" value="${esc(S.email)}" placeholder="name@gmail.com"></div>
+    <div class="field"><label for="pw">סיסמה</label><input id="pw" class="inp" type="password" autocomplete="${signup?"new-password":"current-password"}" placeholder="${signup?"6 תווים לפחות":""}"></div>
+    <button class="btn" style="width:100%;margin-top:18px" data-act="${signup?"signup":"login"}">${signup?"יצירת סיסמה":"כניסה"}</button>
+    <div class="err" id="autherr">${esc(S.authErr)}</div>
+    <div class="row" style="justify-content:space-between">
+      <button class="linkbtn" data-act="mode">${signup?"כבר יש לי סיסמה":"פעם ראשונה? יצירת סיסמה"}</button>
+      ${signup?"":`<button class="linkbtn" data-act="reset">שכחתי סיסמה</button>`}
+    </div></div>`;
+}
+const AUTH_ERR = {"auth/invalid-credential":"המייל או הסיסמה שגויים","auth/wrong-password":"הסיסמה שגויה","auth/user-not-found":"עוד אין סיסמה למייל הזה – לחצו על יצירת סיסמה",
+  "auth/email-already-in-use":"כבר יצרת סיסמה – היכנס עם הסיסמה","auth/weak-password":"הסיסמה צריכה להיות 6 תווים לפחות","auth/invalid-email":"כתובת המייל לא תקינה",
+  "auth/too-many-requests":"יותר מדי ניסיונות – נסו שוב בעוד כמה דקות","auth/network-request-failed":"אין חיבור לאינטרנט","auth/operation-not-allowed":"כניסה עם מייל וסיסמה עוד לא הופעלה ב־Firebase"};
+function authError(e){ S.authErr = AUTH_ERR[e?.code] || "משהו השתבש, נסו שוב"; const el=document.getElementById("autherr"); if(el) el.textContent=S.authErr; else render(); }
+document.addEventListener("click", async e=>{
+  const t=e.target.closest("[data-act]"); if(!t || !auth) return;
+  const a=t.dataset.act; const em=()=>(document.getElementById("em")?.value||"").trim().toLowerCase(); const pw=()=>document.getElementById("pw")?.value||"";
+  try{
+    if(a==="mode"){ S.email=em(); S.authMode=S.authMode==="login"?"signup":"login"; S.authErr=""; render(); }
+    else if(a==="login"){ S.email=em(); S.authErr=""; await signInWithEmailAndPassword(auth, S.email, pw()); }
+    else if(a==="signup"){ S.email=em(); if(!EMAILS[S.email]){ S.authErr="המייל הזה לא מורשה לאפליקציה"; return render(); }
+      const cred=await createUserWithEmailAndPassword(auth, S.email, pw()); await sendEmailVerification(cred.user); }
+    else if(a==="reset"){ S.email=em(); if(!S.email){ S.authErr="כתבו קודם את המייל"; return render(); } await sendPasswordResetEmail(auth, S.email); S.authErr=""; toast("נשלח מייל לאיפוס סיסמה"); }
+    else if(a==="resend"){ await sendEmailVerification(auth.currentUser); toast("נשלח שוב"); }
+    else if(a==="verified"){ await auth.currentUser.reload(); await auth.currentUser.getIdToken(true); handleUser(auth.currentUser); if(!auth.currentUser.emailVerified){ S.authErr="המייל עוד לא אומת"; render(); } }
+    else if(a==="logout"){ await signOut(auth); }
+  }catch(err){ authError(err); }
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="pw"||e.target.id==="em")){ document.querySelector('[data-act="login"],[data-act="signup"]')?.click(); } });
+
+/* ---------- data ---------- */
+const SEED_FIXED={apartment:[{name:"שכירות",amount:6300,freq:"monthly",payer:"both"},{name:"ארנונה",amount:500,freq:"bi",payer:"guy"},{name:"גז",amount:50,freq:"bi",payer:"guy"},{name:"מים",amount:300,freq:"bi",payer:"guy"},{name:"חשמל",amount:500,freq:"bi",payer:"guy"},{name:"אינטרנט",amount:100,freq:"monthly",payer:"gaia"},{name:"תמי 4",amount:100,freq:"monthly",payer:"guy"},{name:"סופר וקניות",amount:1500,freq:"monthly",payer:"both"}],
+  personal:[{name:"קרוספיט",amount:500,owner:"guy"},{name:"ביטוח רכב",amount:500,owner:"guy"},{name:"דלק",amount:700,owner:"guy"},{name:"אפל מיוזיק",amount:50,owner:"guy"}]};
+const m=(ym,p,salary,inv=[])=>({ym,person:p,salary,expenses:{},investments:inv,note:"",fixedApt:p==="guy"?4675:4000,fixedPersonal:p==="guy"?1750:0});
+const SEED_MONTHS={"2026-07-guy":m("2026-07","guy",9635),"2026-08-guy":m("2026-08","guy",12636),"2026-09-guy":m("2026-09","guy",12736),
+  "2026-10-guy":m("2026-10","guy",14144,[{amount:33000,where:"אקסלנס",how:"העברה בנקאית"}]),"2026-11-guy":m("2026-11","guy",null,[{amount:5000,where:"אקסלנס",how:"הוראת קבע"}]),
+  "2026-07-gaia":m("2026-07","gaia",2720),"2026-08-gaia":m("2026-08","gaia",2720),"2026-09-gaia":m("2026-09","gaia",2720),"2026-10-gaia":m("2026-10","gaia",13000)};
+
+let unsubs=[], timer=null;
+async function startData(){
+  unsubs.forEach(u=>u()); unsubs=[];
+  try{ const f=await getDoc(doc(fs,"fixed","main"));
+    if(!f.exists()){ const b=writeBatch(fs); b.set(doc(fs,"fixed","main"),SEED_FIXED); Object.entries(SEED_MONTHS).forEach(([id,v])=>b.set(doc(fs,"months",id),v)); await b.commit(); }
+  }catch(e){ console.warn(e); }
+  clearTimeout(timer); timer=setTimeout(()=>{ S.timedOut=true; render(); },10000);
+  const ok=(snap)=>{ const was=S.live; S.live=!snap.metadata.fromCache; if(S.live){ clearTimeout(timer); S.timedOut=false; } return was!==S.live; };
+  const rerender=()=>{ if(view()==="entry"&&S.dirty) updateEntrySummary(); else if(view()==="fixed"&&S.fixedDirty) {} else render(); };
+  unsubs.push(onSnapshot(collection(fs,"months"),{includeMetadataChanges:true},snap=>{
+    const mm={}; snap.docs.forEach(d=>{ mm[d.id]=d.data(); }); S.months=mm; ok(snap); rerender();
+  },err=>{ console.warn(err); S.live=false; render(); }));
+  unsubs.push(onSnapshot(doc(fs,"fixed","main"),{includeMetadataChanges:true},snap=>{
+    const v=snap.exists()?snap.data():null; S.fixed={apartment:(v?.apartment||[]).slice(),personal:(v?.personal||[]).slice()}; ok(snap); rerender();
+  },err=>{ console.warn(err); }));
+}
+function handleUser(u){
+  if(!u){ S.authState="out"; S.me=null; unsubs.forEach(f=>f()); unsubs=[]; S.live=false; render(); return; }
+  const email=(u.email||"").toLowerCase(); S.email=email;
+  if(!EMAILS[email]){ S.authState="denied"; render(); return; }
+  if(!u.emailVerified){ S.authState="verify"; render(); return; }
+  S.me=EMAILS[email]; S.myId=email; S.authState="in"; S.authErr=""; startData(); render();
+}
+
+async function saveMonth(){
+  if(S.saving) return; const D=S.draft;
+  const expenses={}; Object.entries(D.expenses).forEach(([k,v])=>{ const n=num(v); if(n) expenses[k]=n; });
+  const investments=D.investments.filter(x=>num(x.amount)).map(x=>({amount:num(x.amount),where:(x.where||"").trim(),how:(x.how||"").trim()}));
+  const body={ym:S.entryYm, person:S.me, salary:D.salary===""?null:num(D.salary), expenses, investments, note:(D.note||"").trim(),
+    fixedApt:aptShare(S.me), fixedPersonal:persFixed(S.me), updatedAt:new Date().toISOString(), updatedBy:S.email};
+  S.saving=true; updateEntrySummary();
+  try{ await setDoc(doc(fs,"months",S.draftKey), body); S.dirty=false; toast("נשמר ✓ "+ymLabel(S.entryYm)); }
+  catch(err){ toast(err?.code==="permission-denied"?"אין הרשאה לשמור":"השמירה נכשלה – נסו שוב"); }
+  S.saving=false; render();
+}
+async function saveFixed(){
+  if(S.saving) return; const F=S.fixedDraft;
+  const body={ apartment:F.apartment.filter(x=>(x.name||"").trim()||num(x.amount)).map(x=>({name:(x.name||"").trim(),amount:num(x.amount),freq:x.freq==="bi"?"bi":"monthly",payer:PAYERS[x.payer]?x.payer:"both"})),
+    personal:F.personal.filter(x=>(x.name||"").trim()||num(x.amount)).map(x=>({name:(x.name||"").trim(),amount:num(x.amount),owner:x.owner==="gaia"?"gaia":"guy"})) };
+  S.saving=true; render();
+  try{ await setDoc(doc(fs,"fixed","main"), body); S.fixedDirty=false; S.fixedDraft=null; toast("ההוצאות הקבועות נשמרו ✓"); }
+  catch(err){ toast(err?.code==="permission-denied"?"אין הרשאה לשמור":"השמירה נכשלה – נסו שוב"); }
+  S.saving=false; render();
+}
+
+/* ---------- boot ---------- */
+let auth=null, fs=null;
+render();
+if(!window.FIREBASE_CONFIG || !window.FIREBASE_CONFIG.apiKey){ S.authState="noconfig"; render(); }
+else{
+  const app=initializeApp(window.FIREBASE_CONFIG);
+  auth=getAuth(app); await setPersistence(auth, browserLocalPersistence).catch(()=>{});
+  try{ fs=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})}); }catch(e){ fs=getFirestore(app); }
+  onAuthStateChanged(auth, handleUser);
+}
+
+</script>
+</body>
+</html>
