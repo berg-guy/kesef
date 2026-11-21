@@ -1,0 +1,1 @@
+window.FIREBASE_CONFIG = { apiKey: "AIzaSyAkGdq8IC0H8VgWBgXeA7V6VOZ4CMzt9RM", authDomain: "kesef-shelanu.firebaseapp.com", projectId: "kesef-shelanu", storageBucket: "kesef-shelanu.firebasestorage.app", messagingSenderId: "954935484623", appId: "1:954935484623:web:bda53b45cce071a7ded7ba" };
